@@ -1,0 +1,15 @@
+CC = gcc
+
+all: matrixgen serialtester
+
+matrixgen: matrixgen.c
+	$(CC) matrixgen.c -o matrixgen
+
+serialtester: serialtester.c lab1_IO.o
+	$(CC) serialtester.c lab1_IO.o -o serialtester
+
+lab1_IO.o: lab1_IO.c
+	$(CC) -c lab1_IO.c
+
+clean:
+	rm *.o matrixgen serialtester
