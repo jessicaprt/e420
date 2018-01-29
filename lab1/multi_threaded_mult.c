@@ -11,7 +11,7 @@ int main (int argc, char* argv[])
     }
 
     int n; // matrix size
-    int i; // loop counters
+    int i, j, k; // loop counters
     int total_cores = atoi(argv[1]);
     int start_time, end_time; // time measurement
     int** A;
@@ -27,7 +27,15 @@ int main (int argc, char* argv[])
     Lab1_loadinput(&A, &B, &n);
 
     GET_TIME(start_time);
-    // do the maths
+
+    for (i = 0; i < n; i++)
+        for(j = 0; j < n; j++)
+        {
+            C[i][j] = 0;
+            for (k = 0; k < n; k++)
+                C[i][j] += A[i][k] * B[k][j];
+        }
+
     GET_TIME(end_time);
 
     // save output
