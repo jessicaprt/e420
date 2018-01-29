@@ -18,7 +18,7 @@ int main (int argc, char* argv[])
     int** B; // loaded matricies
 
     // prepare output matrix
-    int** C; // loaded matricies
+    int** C;
     C = malloc(n * sizeof(int*));
     for (i = 0; i < n; i++)
         C[i] = malloc(n * sizeof(int));
