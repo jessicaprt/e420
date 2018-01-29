@@ -1,7 +1,9 @@
 CC = gcc
 
-all: matrixgen serialtester
+all: main matrixgen serialtester
 
+main: multi_threaded_mult.c
+	$(CC) multi_threaded_mult.c lab1_IO.o -o main
 matrixgen: matrixgen.c
 	$(CC) matrixgen.c -o matrixgen
 

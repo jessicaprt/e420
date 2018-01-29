@@ -11,11 +11,17 @@ int main (int argc, char* argv[])
     }
 
     int n; // matrix size
+    int i; // loop counters
     int total_cores = atoi(argv[1]);
     int start_time, end_time; // time measurement
     int** A;
-    int** B;
+    int** B; // loaded matricies
+
+    // prepare output matrix
     int** C; // loaded matricies
+    C = malloc(n * sizeof(int*));
+    for (i = 0; i < n; i++)
+        C[i] = malloc(n * sizeof(int));
 
     // load input
     Lab1_loadinput(&A, &B, &n);
