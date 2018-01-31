@@ -18,11 +18,12 @@ void* multiply_matrix_partition(void* params)
 {
     matrix_parition_t* matrix_partition_parms = (matrix_parition_t*) params;
 
-    int x = floor(matrix_partition_parms->thread_rank / matrix_partition_parms->root_num_threads);
+    int x = matrix_partition_parms->thread_rank % matrix_partition_parms->root_num_threads;
+    int y = floor(matrix_partition_parms->thread_rank / matrix_partition_parms->root_num_threads);
+
     int min_x = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * x;
     int max_x =(matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (x + 1) - 1;
 
-    int y = matrix_partition_parms->thread_rank % matrix_partition_parms->root_num_threads;
     int min_y = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * y;
     int max_y =(matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (y + 1) - 1;
 
@@ -67,26 +68,25 @@ int main (int argc, char* argv[])
     for (i = 0; i < n; i++)
         C[i] = malloc(n * sizeof(int));
 
+    GET_TIME(start_time);
+
     int thread_rank = 0;
     int thread_count = atoi(argv[1]);
     pthread_t* thread_handles = malloc(thread_count * sizeof(pthread_t));
-
-    GET_TIME(start_time);
-
     int threads_root = (int) sqrt(thread_count);
 
     for (thread_rank = 0; thread_rank < thread_count; thread_rank++)
     {
-        matrix_parition_t partition_params;
-        partition_params.left_matrix = A;
-        partition_params.right_matrix = B;
-        partition_params.result_matrix = C;
-        partition_params.matrix_width = n;
-        partition_params.thread_rank = thread_rank;
-        partition_params.root_num_threads = threads_root;
+        matrix_parition_t* partition_params = malloc(sizeof(matrix_parition_t));
+        partition_params->left_matrix = A;
+        partition_params->right_matrix = B;
+        partition_params->result_matrix = C;
+        partition_params->matrix_width = n;
+        partition_params->thread_rank = thread_rank;
+        partition_params->root_num_threads = threads_root;
 
         pthread_create(&thread_handles[thread_rank], NULL,
-            multiply_matrix_partition, (void *) &partition_params);
+            multiply_matrix_partition, (void *) partition_params);
     }
 
     for (thread_rank = 0; thread_rank < thread_count; thread_rank++)
