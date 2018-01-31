@@ -73,11 +73,13 @@ int main (int argc, char* argv[])
     int thread_rank = 0;
     int thread_count = atoi(argv[1]);
     pthread_t* thread_handles = malloc(thread_count * sizeof(pthread_t));
+    matrix_parition_t* partition_matrix_params = malloc(thread_count * sizeof(matrix_parition_t));
+
     int threads_root = (int) sqrt(thread_count);
 
     for (thread_rank = 0; thread_rank < thread_count; thread_rank++)
     {
-        matrix_parition_t* partition_params = malloc(sizeof(matrix_parition_t));
+        matrix_parition_t* partition_params = &partition_matrix_params[thread_rank];
         partition_params->left_matrix = A;
         partition_params->right_matrix = B;
         partition_params->result_matrix = C;
@@ -93,6 +95,9 @@ int main (int argc, char* argv[])
     {
         pthread_join(thread_handles[thread_rank], NULL);
     }
+
+    free(thread_handles);
+    free(partition_matrix_params);
 
     GET_TIME(end_time);
 
