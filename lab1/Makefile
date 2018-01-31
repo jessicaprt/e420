@@ -19,7 +19,7 @@ clean:
 	rm *.o matrixgen serialtester main
 
 push:
-	ssh e420 -t "rm -rf ./lab1/ ; mkdir -p lab1"
+	ssh e420 -t "mkdir -p lab1; rm -rf ./lab1/*"
 	scp Makefile *.c *.h *.txt *.sh e420:~/lab1/
 
 package:
