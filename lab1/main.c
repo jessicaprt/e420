@@ -25,10 +25,10 @@ void* multiply_matrix_partition(void* params)
 
     // determine partion bounds
     int min_x = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * x;
-    int max_x =(matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (x + 1) - 1;
+    int max_x = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (x + 1) - 1;
 
     int min_y = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * y;
-    int max_y =(matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (y + 1) - 1;
+    int max_y = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (y + 1) - 1;
 
     int i, j, k; // loop counters
 
