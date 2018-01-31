@@ -1,6 +1,7 @@
 *.DSYM
 *.o
 *.out
+*.zip
 matrixgen
 serialtester
 main

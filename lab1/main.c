@@ -16,19 +16,23 @@ typedef struct {
 
 void* multiply_matrix_partition(void* params)
 {
+    // grab parameters for parition
     matrix_parition_t* matrix_partition_parms = (matrix_parition_t*) params;
 
+    // determine partion index
     int x = matrix_partition_parms->thread_rank % matrix_partition_parms->root_num_threads;
     int y = floor(matrix_partition_parms->thread_rank / matrix_partition_parms->root_num_threads);
 
+    // determine partion bounds
     int min_x = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * x;
     int max_x =(matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (x + 1) - 1;
 
     int min_y = (matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * y;
     int max_y =(matrix_partition_parms->matrix_width / matrix_partition_parms->root_num_threads) * (y + 1) - 1;
 
-    int i, j, k;
+    int i, j, k; // loop counters
 
+    // multiply partition area
     for (i = min_y; i <= max_y; i++)
     {
         for(j = min_x; j <= max_x; j++)
@@ -70,6 +74,7 @@ int main (int argc, char* argv[])
 
     GET_TIME(start_time);
 
+    // allocate enough thread handles and parameter structs for the multi threading
     int thread_rank = 0;
     int thread_count = atoi(argv[1]);
     pthread_t* thread_handles = malloc(thread_count * sizeof(pthread_t));
@@ -79,6 +84,7 @@ int main (int argc, char* argv[])
 
     for (thread_rank = 0; thread_rank < thread_count; thread_rank++)
     {
+        // prepare the thread parameters fro the current thread rank
         matrix_parition_t* partition_params = &partition_matrix_params[thread_rank];
         partition_params->left_matrix = A;
         partition_params->right_matrix = B;
@@ -87,15 +93,18 @@ int main (int argc, char* argv[])
         partition_params->thread_rank = thread_rank;
         partition_params->root_num_threads = threads_root;
 
+        // excecute parition
         pthread_create(&thread_handles[thread_rank], NULL,
             multiply_matrix_partition, (void *) partition_params);
     }
 
+    // wait for all threads to finish execution
     for (thread_rank = 0; thread_rank < thread_count; thread_rank++)
     {
         pthread_join(thread_handles[thread_rank], NULL);
     }
 
+    // free allocated memory
     free(thread_handles);
     free(partition_matrix_params);
 
