@@ -10,7 +10,6 @@ typedef struct {
     int** right_matrix;
     int** result_matrix;
     int matrix_width;
-    int partition_width;
     int thread_rank;
     int root_num_threads;
 } matrix_parition_t;
@@ -29,15 +28,16 @@ void* multiply_matrix_partition(void* params)
 
     int i, j, k;
 
-    for (i = min_x; i < max_x; i++)
+    for (i = min_y; i <= max_y; i++)
     {
-        for(j = min_y; j < max_y; j++)
+        for(j = min_x; j <= max_x; j++)
         {
-            for (k = 0; k < matrix_partition_parms->partition_width; k++)
+            matrix_partition_parms->result_matrix[i][j] = 0;
+            for (k = 0; k < matrix_partition_parms->matrix_width; k++)
             {
                 matrix_partition_parms->result_matrix[i][j] +=
-                    matrix_partition_parms->left_matrix[i][min_y + k] *
-                    matrix_partition_parms->right_matrix[min_x + k][j];
+                    matrix_partition_parms->left_matrix[i][k] *
+                    matrix_partition_parms->right_matrix[k][j];
             }
         }
     }
@@ -74,7 +74,6 @@ int main (int argc, char* argv[])
     GET_TIME(start_time);
 
     int threads_root = (int) sqrt(thread_count);
-    int parition_width = n / threads_root;
 
     for (thread_rank = 0; thread_rank < thread_count; thread_rank++)
     {
@@ -83,9 +82,8 @@ int main (int argc, char* argv[])
         partition_params.right_matrix = B;
         partition_params.result_matrix = C;
         partition_params.matrix_width = n;
-        partition_params.partition_width = parition_width;
         partition_params.thread_rank = thread_rank;
-        partition_params.root_num_threads = thread_count;
+        partition_params.root_num_threads = threads_root;
 
         pthread_create(&thread_handles[thread_rank], NULL,
             multiply_matrix_partition, (void *) &partition_params);
