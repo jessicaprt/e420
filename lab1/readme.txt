@@ -1,3 +1,6 @@
+The main executable compiled on the labmachine is:
+    main_executable.out
+
 Assuming matrixgen.c, lab1_IO.c, and serialtester.c are
 in the same directory as multi_threaded_mult.c the code
 requried to test the multipcation can be built doing:

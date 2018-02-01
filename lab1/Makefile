@@ -24,6 +24,6 @@ push:
 
 package:
 	@mkdir -p $(PACKAGE_NAME)
-	@cp Makefile main.c lab1_IO.c *.h *.txt $(PACKAGE_NAME)/
+	@cp Makefile main.c lab1_IO.c main_executable.out *.h *.txt $(PACKAGE_NAME)/
 	@zip -r $(PACKAGE_NAME).zip $(PACKAGE_NAME)/
 	@rm -rf $(PACKAGE_NAME)
