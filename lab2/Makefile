@@ -4,19 +4,22 @@ PACKAGE_NAME = 1396458-H42
 PUSH_CONTENTS = Makefile *.c *.h *.txt
 PACKAGE_CONTENTS = Makefile *.c *h
 
-all: client server
+all: client server_single_mutex.out
 
 client: client.c
-	$(CC) -g client.c -o client
+	$(CC) -g client.c -o $@
 
-server: server.c single_mutex_client_handler.o
-	$(CC) -g server.c single_mutex_client_handler.o -o server
+server_single_mutex.out: server.c single_mutex_client_handler.o common.o
+	$(CC) -g server.c single_mutex_client_handler.o common.o -o $@
 
 single_mutex_client_handler.o: single_mutex_client_handler.c
-	$(CC) -g -c single_mutex_client_handler.c -o single_mutex_client_handler.o
+	$(CC) -g -c single_mutex_client_handler.c -o $@
+
+common.o: common.c
+	$(CC) -g -c common.c -o $@
 
 clean:
-	rm *.o
+	rm *.out *.o client
 
 push:
 	ssh e420 -t "mkdir -p $(LAB_DIRECTORY); rm -rf ./$(LAB_DIRECTORY)/*"

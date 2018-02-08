@@ -7,15 +7,8 @@
 #include<unistd.h>
 #include<pthread.h>
 #include<math.h>
-
+#include "common.h"
 #include "client_handler.h"
-
-int get_total_digits_of(int number) {
-	if (number == 0) {
-		return 1;
-	}
-	return floor(log10(abs(number))) + 1;
-}
 
 int LENGTH_OF_INITAL_LINE_WITHOUT_INDEX = 27; // do this better
 
@@ -41,7 +34,7 @@ void free_the_array(char** the_array, int total_lines) {
 }
 
 int run_server(int port, char** the_array) {
-			struct sockaddr_in sock_var;
+	struct sockaddr_in sock_var;
 	int serverFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
 	int clientFileDescriptor;
 	int i;
@@ -61,12 +54,12 @@ int run_server(int port, char** the_array) {
 	printf("nsocket has been created");
 	listen(serverFileDescriptor,2000);
 
+	set_up_client_handler();
+
 	while(1) {
-		for(i = 0; i < 20; i++) {
-			clientFileDescriptor=accept(serverFileDescriptor,NULL,NULL);
+			clientFileDescriptor = accept(serverFileDescriptor, NULL, NULL);
 			printf("nConnected to client %dn",clientFileDescriptor);
 			pthread_create(&t, NULL, handle_client, (void *)clientFileDescriptor);
-		}
 	}
 	close(serverFileDescriptor);
 
