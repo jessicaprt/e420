@@ -6,6 +6,10 @@
 #include<arpa/inet.h>
 #include<unistd.h>
 
+void* request_handler(void* socket_param) {
+	int* socket = (int*) socket_param;
+}
+
 int main()
 {
 	struct sockaddr_in sock_var;

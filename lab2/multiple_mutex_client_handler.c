@@ -5,11 +5,14 @@
 #include "client_handler.h"
 #include "common.h"
 
-pthread_mutex_t array_mutex;
+pthread_mutex_t* array_mutexi;
 int LENGTH_OF_MODIFIED_LINE_WITHOUT_INDEX = 45;
 
 void set_up_client_handler(int array_length) {
-    pthread_mutex_init(&array_mutex, NULL);
+    array_mutexi = malloc(array_length * sizeof(pthread_mutex_t));
+    for (int i = 0; i < array_length; i++) {
+        pthread_mutex_init(&array_mutexi[i], NULL);
+    }
 }
 
 void* handle_client(void* handle_client_params) {
@@ -17,6 +20,8 @@ void* handle_client(void* handle_client_params) {
 
     int request_type = receive_int(params->socket);
     int request_index = receive_int(params->socket);
+
+    pthread_mutex_t array_mutex = array_mutexi[request_index];
 
     if (request_type == READ_REQUEST_TYPE) {
         pthread_mutex_lock(&array_mutex);

@@ -9,8 +9,14 @@ all: client server_single_mutex.out
 client: client.c
 	$(CC) -g client.c -o $@
 
+server_multiple_mutex.out: server.c multiple_mutex_client_handler.o common.o
+	$(CC) -g server.c multiple_mutex_client_handler.o common.o -o $@
+
 server_single_mutex.out: server.c single_mutex_client_handler.o common.o
 	$(CC) -g server.c single_mutex_client_handler.o common.o -o $@
+
+multiple_mutex_client_handler.o: multiple_mutex_client_handler.c
+	$(CC) -g -c multiple_mutex_client_handler.c -o $@
 
 single_mutex_client_handler.o: single_mutex_client_handler.c
 	$(CC) -g -c single_mutex_client_handler.c -o $@

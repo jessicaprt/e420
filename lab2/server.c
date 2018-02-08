@@ -33,12 +33,11 @@ void free_the_array(char** the_array, int total_lines) {
 	free(the_array);
 }
 
-int run_server(int port, char** the_array) {
+int run_server(int port, char** the_array, int array_length) {
 	struct sockaddr_in sock_var;
 	int serverFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
 	int clientFileDescriptor;
 	int i;
-	pthread_t t[20];
 
 	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
 	sock_var.sin_port=3000;
@@ -54,12 +53,18 @@ int run_server(int port, char** the_array) {
 	printf("nsocket has been created");
 	listen(serverFileDescriptor,2000);
 
-	set_up_client_handler();
+	set_up_client_handler(array_length);
 
 	while(1) {
-			clientFileDescriptor = accept(serverFileDescriptor, NULL, NULL);
-			printf("nConnected to client %dn",clientFileDescriptor);
-			pthread_create(&t, NULL, handle_client, (void *)clientFileDescriptor);
+		clientFileDescriptor = accept(serverFileDescriptor, NULL, NULL);
+		printf("nConnected to client %dn",clientFileDescriptor);
+
+		pthread_t pthread;
+		handle_client_params_t* params = malloc(sizeof(handle_client_params_t));
+		params->socket = clientFileDescriptor;
+		params->theArray = the_array;
+
+		pthread_create(&pthread, NULL, handle_client, (void *)params);
 	}
 	close(serverFileDescriptor);
 
@@ -72,10 +77,5 @@ int main() {
 	int i =0;
 
 	allocate_the_array(&theArray, total);
-
-	for (i = 0; i < total; i++) {
-		printf("%s\n", theArray[i]);
-	}
-
-	return run_server(3000, theArray);
+	return run_server(3000, theArray, total);
 }

@@ -10,7 +10,7 @@ typedef struct {
 
 // This functions allows you to set up state before handling
 // any clients
-void set_up_client_handler();
+void set_up_client_handler(int array_length);
 
 // This function expects a handle_client_params_t to be passed
 // in as the parameters to the function
