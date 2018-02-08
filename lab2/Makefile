@@ -9,8 +9,11 @@ all: client server
 client: client.c
 	$(CC) -g client.c -o client
 
-server: server.c
-	$(CC) -g server.c -o server
+server: server.c single_mutex_client_handler.o
+	$(CC) -g server.c single_mutex_client_handler.o -o server
+
+single_mutex_client_handler.o: single_mutex_client_handler.c
+	$(CC) -g -c single_mutex_client_handler.c -o single_mutex_client_handler.o
 
 clean:
 	rm *.o
