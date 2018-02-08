@@ -4,6 +4,14 @@ PACKAGE_NAME = 1396458-H42
 PUSH_CONTENTS = Makefile *.c *.h *.txt
 PACKAGE_CONTENTS = Makefile *.c *h
 
+all: client server
+
+client: client.c
+	$(CC) -g client.c -o client
+
+server: server.c
+	$(CC) -g server.c -o server
+
 clean:
 	rm *.o
 

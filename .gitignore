@@ -2,6 +2,12 @@
 *.o
 *.out
 *.zip
+
+# Lab 1
 matrixgen
 serialtester
 main
+
+# Lab 2
+server
+client
