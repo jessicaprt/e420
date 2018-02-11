@@ -1,5 +1,5 @@
 #include <pthread.h>
-#include "read_write_lock.h"
+#include "rw_lock.h"
 
 void rwlock_init(rwlock_t* l) {
     pthread_mutex_init(&(l->read_write_lock), NULL);

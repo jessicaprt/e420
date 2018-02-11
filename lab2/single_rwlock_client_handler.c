@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "client_handler.h"
 #include "common.h"
-#include "read_write_lock.h"
+#include "rw_lock.h"
 
 rwlock_t rw_lock;
 int LENGTH_OF_MODIFIED_LINE_WITHOUT_INDEX = 45;
