@@ -7,23 +7,23 @@ PACKAGE_CONTENTS = Makefile *.c *h
 all: client server_single_mutex.out server_multiple_mutex.out server_multiple_rwlock.out server_single_rwlock.out
 
 client: client.c common.o
-	$(CC) -g client.c common.o -o $@
+	$(CC) -g client.c common.o -lm -pthread -o $@
 
 server_multiple_mutex.out: server.c multiple_mutex_client_handler.o common.o
 	@echo "Building multiple mutex based server"
-	$(CC) -g server.c multiple_mutex_client_handler.o common.o -o $@
+	$(CC) -g server.c multiple_mutex_client_handler.o common.o -lm -pthread -o $@
 
 server_single_mutex.out: server.c single_mutex_client_handler.o common.o
 	@echo "Building single mutex based server"
-	$(CC) -g server.c single_mutex_client_handler.o common.o -o $@
+	$(CC) -g server.c single_mutex_client_handler.o common.o -lm -pthread -o $@
 
 server_multiple_rwlock.out: server.c multiple_rwlock_client_handler.o common.o rw_lock.o
 	@echo "Building multiple rwlock based server"
-	$(CC) -g server.c multiple_rwlock_client_handler.o common.o rw_lock.o -o $@
+	$(CC) -g server.c multiple_rwlock_client_handler.o common.o rw_lock.o -lm -pthread -o $@
 
 server_single_rwlock.out: server.c single_rwlock_client_handler.o common.o rw_lock.o
 	@echo "Building single rwlock based server"
-	$(CC) -g server.c single_rwlock_client_handler.o common.o rw_lock.o -o $@
+	$(CC) -g server.c single_rwlock_client_handler.o common.o rw_lock.o -lm -pthread -o $@
 
 multiple_mutex_client_handler.o: multiple_mutex_client_handler.c rw_lock.o
 	$(CC) -g -c multiple_mutex_client_handler.c -o $@

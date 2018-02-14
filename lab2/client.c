@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 
 	free(thread_handles);
 
-	printf("Elapsed time: %f\n", end_time - start_time);
+	printf("%f\n", end_time - start_time);
 
 	return 0;
 }

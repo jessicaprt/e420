@@ -10,7 +10,8 @@ rwlock_t* rw_locks;
 
 void set_up_client_handler(int array_length) {
     rw_locks = malloc(array_length * sizeof(rwlock_t));
-    for (int i = 0; i < array_length; i++) {
+    int i = 0;
+    for (i = 0; i < array_length; i++) {
         rwlock_init(&rw_locks[i]);
     }
 }

@@ -58,7 +58,7 @@ int run_server(int port, char** the_array, int array_length) {
 	handle_client_params_t* thread_params = malloc(NUMBER_REQUESTS * sizeof(handle_client_params_t));
 
 	int i = 0;
-	for (int i = 0; i < NUMBER_REQUESTS; i++) {
+	for (i = 0; i < NUMBER_REQUESTS; i++) {
 		int clientFileDescriptor = accept(serverFileDescriptor, NULL, NULL);
 		printf("nConnected to client %d\n", clientFileDescriptor);
 
@@ -82,10 +82,15 @@ int run_server(int port, char** the_array, int array_length) {
 	return 0;
 }
 
-int main() {
+int main(int argc, char** argv) {
+	if (argc < 2) {
+		printf("Usage: %s array_size\n", argv[0]);
+		return -1;
+	}
+
 	char** theArray;
-	int total = 100;
-	int i =0;
+	int total = atoi(argv[1]);
+	int i = 0;
 
 	allocate_the_array(&theArray, total);
 	return run_server(3000, theArray, total);

@@ -9,7 +9,8 @@ pthread_mutex_t* array_mutexi;
 
 void set_up_client_handler(int array_length) {
     array_mutexi = malloc(array_length * sizeof(pthread_mutex_t));
-    for (int i = 0; i < array_length; i++) {
+    int i = 0;
+    for (i = 0; i < array_length; i++) {
         pthread_mutex_init(&array_mutexi[i], NULL);
     }
 }

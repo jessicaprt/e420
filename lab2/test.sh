@@ -1,12 +1,12 @@
 #! /bin/bash
 # Run your client for 100 times
-# 
-# 
+#
+#
 # Usage:
 #	./test.sh
 # Notes:
 #	This shell script should be in the same directory as your
-#	client implementation and your client should have portnumber 
+#	client implementation and your client should have portnumber
 #	and the number of strings in theArray as command line paramters;
 #
 
@@ -17,6 +17,8 @@ Duplicates=100
 port=3000
 # The number of strings in theArray
 arraysize=100
+
+output_dir="./test_results"
 
 
 clear
