@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "client_handler.h"
 #include "common.h"
 #include "rw_lock.h"
@@ -37,6 +38,8 @@ void* handle_client(void* handle_client_params) {
         read_and_send_line(params->theArray, params->socket, request_index);
         rwlock_unlock(&rw_lock);
     }
+
+    close(params->socket);
 
     return NULL;
 }

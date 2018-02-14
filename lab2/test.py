@@ -20,12 +20,13 @@ def start_command(command):
 def exec_command(command):
     start_command(command).wait()
 
-exec_command("mkdir -p {0}".format(OUT_DIR))
+exec_command("rm {0}/*".format(OUT_DIR))
+exec_command("mkdir {0}".format(OUT_DIR))
 
 for server_executable in SERVER_EXECUTABLES:
     for array_size in ARRAY_SIZES:
         for i in range(TOTAL_RUNS):
-            server_launch_command = "./{}.out {}".format(server_executable, array_size)
+            server_launch_command = "./{}.out {} {}".format(server_executable, SERVER_PORT, array_size)
             server_process = start_command(server_launch_command)
 
             results_file = "./{0}/{1}-{2}.txt".format(OUT_DIR, server_executable, array_size)
@@ -34,3 +35,4 @@ for server_executable in SERVER_EXECUTABLES:
 
             client_process.wait()
             server_process.wait()
+            SERVER_PORT += 1

@@ -42,6 +42,9 @@ int run_server(int port, char** the_array, int array_length) {
 	sock_var.sin_port = htons(port);
 
 	int serverFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
+	setsockopt(serverFileDescriptor, SOL_SOCKET, SO_REUSEPORT, &(int){ 1 }, sizeof(int));
+	setsockopt(serverFileDescriptor, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int));
+
 	int bind_result = bind(serverFileDescriptor, (struct sockaddr*) &sock_var, sizeof(sock_var));
 
 	if (bind_result < 0) {
@@ -83,15 +86,16 @@ int run_server(int port, char** the_array, int array_length) {
 }
 
 int main(int argc, char** argv) {
-	if (argc < 2) {
-		printf("Usage: %s array_size\n", argv[0]);
+	if (argc < 3) {
+		printf("Usage: %s port array_size\n", argv[0]);
 		return -1;
 	}
 
 	char** theArray;
-	int total = atoi(argv[1]);
+	int port = atoi(argv[1]);
+	int total = atoi(argv[2]);
 	int i = 0;
 
 	allocate_the_array(&theArray, total);
-	return run_server(3000, theArray, total);
+	return run_server(port, theArray, total);
 }
