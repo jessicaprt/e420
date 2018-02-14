@@ -6,6 +6,7 @@
 #include "client_handler.h"
 #include "common.h"
 #include "rw_lock.h"
+#include "timer.h"
 
 rwlock_t* rw_locks;
 
@@ -23,7 +24,12 @@ void* handle_client(void* handle_client_params) {
     int request_type = receive_int(params->socket);
     int request_index = receive_int(params->socket);
 
+    double end_time, start_time;
+
+    GET_TIME(start_time);
     rwlock_t rw_lock = rw_locks[request_index];
+    GET_TIME(end_time);
+    record_memory_latency(start_time, end_time);
 
     if (request_type == READ_REQUEST_TYPE) {
         rwlock_rlock(&rw_lock);

@@ -10,7 +10,7 @@ SERVER_EXECUTABLES = [
 OUT_DIR = "test-results"
 CLIENT_EXECUTABLE = "client"
 
-TOTAL_RUNS = 100
+TOTAL_RUNS = 115
 SERVER_PORT = 3000
 ARRAY_SIZES = [10, 100, 1000, 10000]
 
@@ -28,12 +28,13 @@ for server_executable in SERVER_EXECUTABLES:
         print("Testing {} with an array size of {}.".format(server_executable, array_size))
 
         for i in range(TOTAL_RUNS):
-            server_launch_command = "./{}.out {} {} >> /dev/null".format(server_executable, SERVER_PORT, array_size)
+            server_results_file = "./{0}/{1}-server-{2}.txt".format(OUT_DIR, server_executable, array_size)
+            server_launch_command = "./{}.out {} {} | tail -n 1 >> {}".format(server_executable, SERVER_PORT, array_size)
             server_process = start_command(server_launch_command)
-            time.sleep(0.1)
+            time.sleep(0.2)
 
-            results_file = "./{0}/{1}-{2}.txt".format(OUT_DIR, server_executable, array_size)
-            client_command = "./{} {} {} | tail -n 1 >> {}".format(CLIENT_EXECUTABLE, SERVER_PORT, array_size, results_file)
+            client_results_file = "./{0}/{1}-client-{2}.txt".format(OUT_DIR, server_executable, array_size)
+            client_command = "./{} {} {} | tail -n 1 >> {}".format(CLIENT_EXECUTABLE, SERVER_PORT, array_size, client_results_file)
             client_process = start_command(client_command)
 
             client_process.wait()

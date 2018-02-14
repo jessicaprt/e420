@@ -82,6 +82,8 @@ int run_server(int port, char** the_array, int array_length) {
 
 	close(serverFileDescriptor);
 
+	printf("%f\n", get_total_memory_latency());
+
 	return 0;
 }
 

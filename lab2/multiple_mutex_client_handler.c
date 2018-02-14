@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "client_handler.h"
 #include "common.h"
+#include "timer.h"
 
 pthread_mutex_t* array_mutexi;
 
@@ -22,7 +23,12 @@ void* handle_client(void* handle_client_params) {
     int request_type = receive_int(params->socket);
     int request_index = receive_int(params->socket);
 
+    double end_time, start_time;
+
+    GET_TIME(start_time);
     pthread_mutex_t array_mutex = array_mutexi[request_index];
+    GET_TIME(end_time);
+    record_memory_latency(start_time, end_time);
 
     if (request_type == READ_REQUEST_TYPE) {
         pthread_mutex_lock(&array_mutex);

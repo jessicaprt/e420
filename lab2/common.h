@@ -20,4 +20,8 @@ int get_total_digits_of(int number);
 void read_and_send_line(char** theArray, uint32_t socket, int index);
 void mark_line_as_modified(char** theArray, int index);
 
+// memory_latency_recording
+void record_memory_latency(double end_time, double start_time);
+double get_total_memory_latency();
+
 #endif

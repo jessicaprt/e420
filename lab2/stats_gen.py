@@ -35,7 +35,7 @@ for server_executable in SERVER_EXECUTABLES:
         mean = 0
 
         with open(client_latency_file) as client_file:
-            client_data = [float(line.strip()) for line in client_file.readlines()]
+            client_data = [float(line.strip()) for line in client_file.readlines() if float(line.strip()) < 1]
             mean = sum(client_data) / float(len(client_data))
             gen_client_graph(server_executable, array_size, client_data)
 
