@@ -44,7 +44,7 @@ int get_total_digits_of(int number) {
 }
 
 void read_and_send_line(char** theArray, uint32_t socket, int index) {
-    int arrayLength = strlen(theArray[index]);
+    int arrayLength = strlen(theArray[index]) + 1; // + 1 for the null terminator
     send_int(socket, arrayLength); // send size of line
     send_chars(socket, theArray[index], arrayLength); // send line itself
 }
