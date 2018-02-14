@@ -35,36 +35,34 @@ void free_the_array(char** the_array, int total_lines) {
 
 int run_server(int port, char** the_array, int array_length) {
 	struct sockaddr_in sock_var;
-	int serverFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
-	int clientFileDescriptor;
-	int i;
 
-	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
-	sock_var.sin_port=3000;
-	sock_var.sin_family=AF_INET;
+	sock_var.sin_family = AF_INET;
+	sock_var.sin_addr.s_addr = INADDR_ANY;
+	sock_var.sin_port = htons(port);
 
-	int bind_result = bind(serverFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var));
+	int serverFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
+	int bind_result = bind(serverFileDescriptor, (struct sockaddr*) &sock_var, sizeof(sock_var));
 
 	if (bind_result < 0) {
-		printf("Failed to create server socket.\n");
+		perror("Failed to create server socket");
 		return -1;
 	}
 
-	printf("nsocket has been created");
-	listen(serverFileDescriptor,2000);
+	printf("nsocket has been created\n");
+	listen(serverFileDescriptor, 2000);
 
 	set_up_client_handler(array_length);
 
 	while(1) {
-		clientFileDescriptor = accept(serverFileDescriptor, NULL, NULL);
-		printf("nConnected to client %dn",clientFileDescriptor);
+		int clientFileDescriptor = accept(serverFileDescriptor, NULL, NULL);
+		printf("nConnected to client %d\n", clientFileDescriptor);
 
-		pthread_t pthread;
+		pthread_t* pthread = malloc(sizeof(pthread_t));
 		handle_client_params_t* params = malloc(sizeof(handle_client_params_t));
 		params->socket = clientFileDescriptor;
 		params->theArray = the_array;
 
-		pthread_create(&pthread, NULL, handle_client, (void *)params);
+		pthread_create(pthread, NULL, handle_client, (void *)params);
 	}
 	close(serverFileDescriptor);
 

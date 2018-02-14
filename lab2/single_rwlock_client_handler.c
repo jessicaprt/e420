@@ -7,7 +7,6 @@
 #include "rw_lock.h"
 
 rwlock_t rw_lock;
-int LENGTH_OF_MODIFIED_LINE_WITHOUT_INDEX = 45;
 
 void set_up_client_handler(int array_length) {
     rwlock_init(&rw_lock);
@@ -21,24 +20,16 @@ void* handle_client(void* handle_client_params) {
 
     if (request_type == READ_REQUEST_TYPE) {
         rwlock_rlock(&rw_lock);
-        char * arrayLine = params->theArray[request_index];
+        read_and_send_line(params->theArray, params->socket, request_index);
         rwlock_unlock(&rw_lock);
-
-        int arrayLength = strlen(arrayLine);
-        send_chars(params->socket, arrayLine, arrayLength);
     } else if (request_type == WRITE_REQUEST_TYPE) {
         rwlock_wlock(&rw_lock);
-        int newLength = LENGTH_OF_MODIFIED_LINE_WITHOUT_INDEX + get_total_digits_of(request_index);
-        params->theArray[request_index] = realloc(params->theArray[request_index], newLength * sizeof(char));
-        snprintf(params->theArray[request_index], newLength, "String %d has been modified by a write request", request_index);
+        mark_line_as_modified(params->theArray, request_index);
         rwlock_unlock(&rw_lock);
 
         rwlock_rlock(&rw_lock);
-        char * arrayLine = params->theArray[request_index];
+        read_and_send_line(params->theArray, params->socket, request_index);
         rwlock_unlock(&rw_lock);
-
-        int arrayLength = strlen(arrayLine);
-        send_chars(params->socket, arrayLine, arrayLength);
     }
 
     return NULL;

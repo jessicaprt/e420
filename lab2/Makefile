@@ -7,7 +7,7 @@ PACKAGE_CONTENTS = Makefile *.c *h
 all: client server_single_mutex.out server_multiple_mutex.out server_multiple_rwlock.out server_single_rwlock.out
 
 client: client.c
-	$(CC) -g client.c -o $@
+	$(CC) -g client.c common.o -o $@
 
 server_multiple_mutex.out: server.c multiple_mutex_client_handler.o common.o
 	@echo "Building multiple mutex based server"
