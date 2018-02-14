@@ -25,7 +25,7 @@ exec_command("mkdir -p {0}".format(OUT_DIR))
 for server_executable in SERVER_EXECUTABLES:
     for array_size in ARRAY_SIZES:
         for i in range(TOTAL_RUNS):
-            server_launch_command = "./{0}.out {}".format(server_executable, array_size)
+            server_launch_command = "./{}.out {}".format(server_executable, array_size)
             server_process = start_command(server_launch_command)
 
             results_file = "./{0}/{1}-{2}.txt".format(OUT_DIR, server_executable, array_size)
