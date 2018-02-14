@@ -11,6 +11,7 @@
 #include "client_handler.h"
 
 int LENGTH_OF_INITAL_LINE_WITHOUT_INDEX = 27; // do this better
+const int NUMBER_REQUESTS = 1000;
 
 void allocate_the_array(char*** pointer_to_the_array, int total_lines) {
 	char** the_array = malloc(total_lines * sizeof(char*));
@@ -53,17 +54,29 @@ int run_server(int port, char** the_array, int array_length) {
 
 	set_up_client_handler(array_length);
 
-	while(1) {
+	pthread_t* thread_handles = malloc(NUMBER_REQUESTS * sizeof(pthread_t));
+	handle_client_params_t* thread_params = malloc(NUMBER_REQUESTS * sizeof(handle_client_params_t));
+
+	int i = 0;
+	for (int i = 0; i < NUMBER_REQUESTS; i++) {
 		int clientFileDescriptor = accept(serverFileDescriptor, NULL, NULL);
 		printf("nConnected to client %d\n", clientFileDescriptor);
 
-		pthread_t* pthread = malloc(sizeof(pthread_t));
-		handle_client_params_t* params = malloc(sizeof(handle_client_params_t));
+		handle_client_params_t* params = &thread_params[i];
 		params->socket = clientFileDescriptor;
 		params->theArray = the_array;
 
-		pthread_create(pthread, NULL, handle_client, (void *)params);
+		pthread_create(&thread_handles[i], NULL, handle_client, (void *)params);
 	}
+
+
+	for (i = 0; i < NUMBER_REQUESTS; i++) {
+		pthread_join(thread_handles[i], NULL);
+	}
+
+	free(thread_handles);
+	free(thread_params);
+
 	close(serverFileDescriptor);
 
 	return 0;
