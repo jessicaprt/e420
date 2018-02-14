@@ -29,7 +29,7 @@ for server_executable in SERVER_EXECUTABLES:
 
         for i in range(TOTAL_RUNS):
             server_results_file = "./{0}/{1}-server-{2}.txt".format(OUT_DIR, server_executable, array_size)
-            server_launch_command = "./{}.out {} {} | tail -n 1 >> {}".format(server_executable, SERVER_PORT, array_size)
+            server_launch_command = "./{}.out {} {} | tail -n 1 >> {}".format(server_executable, SERVER_PORT, array_size, server_results_file)
             server_process = start_command(server_launch_command)
             time.sleep(0.2)
 

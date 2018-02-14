@@ -26,20 +26,41 @@ def gen_client_graph(server_executable, array_size, data):
     plt.xlabel('Client Latency (ms)', fontsize=12)
     plt.ylabel('Cumulative Probability', fontsize=12)
 
-    figure.savefig("./{}/{}-{}.png".format(OUT_DIR, server_executable, array_size), dpi=400)
+    figure.savefig("./{}/{}-client-{}.png".format(OUT_DIR, server_executable, array_size), dpi=400)
+    figure.clf()
+
+def gen_server_graph(server_executable, array_size, data):
+    seaborn.set(style='ticks')
+
+    plot = seaborn.distplot(data, hist_kws=dict(cumulative=True), kde_kws=dict(cumulative=True))
+    figure = plot.get_figure()
+
+    figure.suptitle("{} with an array size of {}".format(server_executable, array_size), fontsize = 16)
+    plt.xlabel('Server Memory Access Latency (ms)', fontsize=12)
+    plt.ylabel('Cumulative Probability', fontsize=12)
+
+    figure.savefig("./{}/{}-server-{}.png".format(OUT_DIR, server_executable, array_size), dpi=400)
     figure.clf()
 
 for server_executable in SERVER_EXECUTABLES:
     for array_size in ARRAY_SIZES:
-        client_latency_file = "./{}/{}-{}.txt".format(TEST_RESULTS_DIR, server_executable, array_size)
-        mean = 0
+        client_latency_file = "./{}/{}-client-{}.txt".format(TEST_RESULTS_DIR, server_executable, array_size)
+        server_latency_file = "./{}/{}-server-{}.txt".format(TEST_RESULTS_DIR, server_executable, array_size)
+        client_mean = 0
+        server_mean
 
         with open(client_latency_file) as client_file:
             client_data = [float(line.strip()) for line in client_file.readlines() if float(line.strip()) < 1]
-            mean = sum(client_data) / float(len(client_data))
+            client_mean = sum(client_data) / float(len(client_data))
             gen_client_graph(server_executable, array_size, client_data)
 
-        output.append("{}-{} mean = {} ms".format(server_executable, array_size, mean))
+        with open(server_latency_file) as server_file:
+            server_data = [float(line.strip()) for line in client_file.readlines() if float(line.strip()) < 1]
+            server_mean = sum(server_data) / float(len(server_data))
+            gen_server_graph(server_executable, array_size, server_data)
+
+        output.append("{}-{} client mean = {} ms".format(server_executable, array_size, client_mean))
+        output.append("{}-{} server mean = {} ms".format(server_executable, array_size, server_mean))
 
 with open("./{}/summary.txt".format(OUT_DIR), 'w') as summary_file:
     for line in output:
