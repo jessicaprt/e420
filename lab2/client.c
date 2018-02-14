@@ -20,10 +20,11 @@ void* request_handler(void* socket_param) {
 
 	printf("%s\n", buffer);
 	close(socket);
+
+	return NULL;
 }
 
-int main()
-{
+int main() {
 	struct sockaddr_in sock_var;
 	int clientFileDescriptor=socket(AF_INET, SOCK_STREAM, 0);
 
@@ -31,15 +32,16 @@ int main()
 	sock_var.sin_port=3000;
 	sock_var.sin_family=AF_INET;
 
-	if(connect(clientFileDescriptor, (struct sockaddr*) &sock_var, sizeof(sock_var))>=0)
-	{
-		printf("Connected to server %dn",clientFileDescriptor);
-		pthread_t* client_thread = malloc(sizeof(pthread_t));
-
-		pthread_create(client_thread, NULL, request_handler, (void*) clientFileDescriptor);
-	} else {
+	int connectionResult = connect(clientFileDescriptor, (struct sockaddr*) &sock_var, sizeof(sock_var));
+	if (connectionResult < 0) {
 		perror("socket creation failed");
 		return -1;
 	}
+
+	printf("Connected to server %dn",clientFileDescriptor);
+	pthread_t* client_thread = malloc(sizeof(pthread_t));
+
+	pthread_create(client_thread, NULL, request_handler, (void*) clientFileDescriptor);
+
 	return 0;
 }

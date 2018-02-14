@@ -6,7 +6,7 @@ PACKAGE_CONTENTS = Makefile *.c *h
 
 all: client server_single_mutex.out server_multiple_mutex.out server_multiple_rwlock.out server_single_rwlock.out
 
-client: client.c
+client: client.c common.o
 	$(CC) -g client.c common.o -o $@
 
 server_multiple_mutex.out: server.c multiple_mutex_client_handler.o common.o
@@ -44,7 +44,7 @@ rw_lock.o: rw_lock.c
 	$(CC) -g -c $^ -o $@
 
 clean:
-	rm *.out *.o client
+	rm -rf *.out *.o *.dSYM client
 
 push:
 	ssh e420 -t "mkdir -p $(LAB_DIRECTORY); rm -rf ./$(LAB_DIRECTORY)/*"
