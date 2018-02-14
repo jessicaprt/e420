@@ -1,7 +1,7 @@
 CC = gcc
 LAB_DIRECTORY = lab2
 PACKAGE_NAME = 1396458-H42
-PUSH_CONTENTS = Makefile *.c *.h *.txt
+PUSH_CONTENTS = Makefile *.c *.h *.py
 PACKAGE_CONTENTS = Makefile *.c *h
 
 all: client server_single_mutex.out server_multiple_mutex.out server_multiple_rwlock.out server_single_rwlock.out

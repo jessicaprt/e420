@@ -4,7 +4,7 @@ SERVER_EXECUTABLES = [
     "server_single_mutex",
     "server_multiple_mutex",
     "server_single_rwlock",
-    "server_multiple_mutex"
+    "server_multiple_rwlock"
 ]
 
 OUT_DIR = "test-results"
@@ -25,9 +25,12 @@ exec_command("mkdir {0}".format(OUT_DIR))
 
 for server_executable in SERVER_EXECUTABLES:
     for array_size in ARRAY_SIZES:
+        print("Testing {} with an array size of {}.".format(server_executable, array_size))
+
         for i in range(TOTAL_RUNS):
-            server_launch_command = "./{}.out {} {}".format(server_executable, SERVER_PORT, array_size)
+            server_launch_command = "./{}.out {} {} >> /dev/null".format(server_executable, SERVER_PORT, array_size)
             server_process = start_command(server_launch_command)
+            time.sleep(0.1)
 
             results_file = "./{0}/{1}-{2}.txt".format(OUT_DIR, server_executable, array_size)
             client_command = "./{} {} {} | tail -n 1 >> {}".format(CLIENT_EXECUTABLE, SERVER_PORT, array_size, results_file)
@@ -36,3 +39,4 @@ for server_executable in SERVER_EXECUTABLES:
             client_process.wait()
             server_process.wait()
             SERVER_PORT += 1
+            time.sleep(0.1)
