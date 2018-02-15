@@ -1,5 +1,10 @@
 #include <pthread.h>
 
+/*
+    NOTE: This Read Write lock implementation was based from
+    the ECE 420 Chapter 2 lecture notes
+*/
+
 typedef struct {
   int readers;
   int writer;

@@ -1,6 +1,11 @@
 #include <pthread.h>
 #include "rw_lock.h"
 
+/*
+NOTE: This Read Write lock implementation was based from
+the ECE 420 Chapter 2 lecture notes
+*/
+
 void rwlock_init(rwlock_t* l) {
     pthread_mutex_init(&(l->read_write_lock), NULL);
     pthread_cond_init(&(l->writer_proceed), NULL);

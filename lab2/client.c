@@ -22,7 +22,7 @@ void* request_handler(void* socket_param) {
 	int request_type;
 	int request_chance = get_random_int(100);
 
-	if (request_chance < 5) {
+	if (request_chance < 50) {
 		request_type = WRITE_REQUEST_TYPE;
 	} else {
 		request_type = READ_REQUEST_TYPE;
