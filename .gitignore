@@ -11,3 +11,6 @@ main
 # Lab 2
 server
 client
+
+# Lab 3
+lab3/tmp/*
