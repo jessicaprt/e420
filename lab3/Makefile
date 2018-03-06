@@ -6,7 +6,7 @@ IO_OBJ = Lab3IO.o
 lab: original datagen serialtester
 
 original: original.c $(IO_OBJ)
-	$(CC) $^ -g -o $@
+	$(CC) $^ -fopenmp -g -o $@
 
 datagen: datagen.c $(IO_OBJ)
 	$(CC) $^ -g -o $@
