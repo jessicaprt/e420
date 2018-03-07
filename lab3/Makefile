@@ -1,4 +1,5 @@
 CC = gcc
+CFLAGS = --std=c99
 PACKAGE_NAME = 1396458-H42
 
 IO_OBJ = Lab3IO.o
@@ -6,16 +7,16 @@ IO_OBJ = Lab3IO.o
 lab: original datagen serialtester
 
 original: original.c $(IO_OBJ)
-	$(CC) $^ -fopenmp -g -o $@
+	$(CC) $(CFLAGS) $^ -fopenmp -g -o $@
 
 datagen: datagen.c $(IO_OBJ)
-	$(CC) $^ -g -o $@
+	$(CC) $(CFLAGS) $^ -g -o $@
 
 serialtester: serialtester.c $(IO_OBJ)
-	$(CC) $^ -g -o $@ -lm
+	$(CC) $(CFLAGS) $^ -g -o $@ -lm
 
 $(IO_OBJ): Lab3IO.c
-	$(CC) -g -c Lab3IO.c
+	$(CC) $(CFLAGS) -g -c Lab3IO.c
 
 clean:
 	rm *.o datagen serialtester original

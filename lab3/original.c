@@ -5,12 +5,11 @@
 #include "timer.h"
 
 int main(int argc, char* argv[]){
-    int i, j, k, size;
+    int size;
     int thread_count;
     double** Au;
     double* X;
     int* index;
-    double temp;
     double start, end;
 
     if (argc<=1){
@@ -23,7 +22,7 @@ int main(int argc, char* argv[]){
     Lab3LoadInput(&Au, &size);
     X = CreateVec(size);
     index = malloc(size * sizeof(int));
-    for (i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
         index[i] = i;
 
     GET_TIME(start);
@@ -31,39 +30,55 @@ int main(int argc, char* argv[]){
         X[0] = Au[0][1] / Au[0][0];
     else{
         /*Gaussian elimination*/
-        for (k = 0; k < size - 1; ++k){
-            /*Pivoting*/
-            temp = 0;
-            for (i = k, j = 0; i < size; ++i)
-                if (temp < Au[index[i]][k] * Au[index[i]][k]){
-                    temp = Au[index[i]][k] * Au[index[i]][k];
-                    j = i;
+        #pragma omp parallel num_threads(thread_count) default(none) shared(Au, X, index, size)
+        {
+            for (int k = 0; k < size - 1; ++k){
+                #pragma omp single
+                {
+                    /*Pivoting*/
+                    double temp = 0;
+
+                    int j = 0;
+                    for (int i = k; i < size; ++i) {
+                        if (temp < Au[index[i]][k] * Au[index[i]][k]){
+                            temp = Au[index[i]][k] * Au[index[i]][k];
+                            j = i;
+                        }
+                    }
+
+                    if (j != k)/*swap*/{
+                        double i = index[j];
+                        index[j] = index[k];
+                        index[k] = i;
+                    }
                 }
-            if (j != k)/*swap*/{
-                i = index[j];
-                index[j] = index[k];
-                index[k] = i;
+
+                /*calculating*/
+                #pragma omp for schedule(guided)
+                for (int i = k + 1; i < size; ++i){
+                    double temp = Au[index[i]][k] / Au[index[k]][k];
+                    for (int j = k; j < size + 1; ++j)
+                        Au[index[i]][j] -= Au[index[k]][j] * temp;
+                }
             }
-            /*calculating*/
-#           pragma omp parallel for num_threads(thread_count) default(none) shared(Au, index, k, size) private(i, j, temp)
-            for (i = k + 1; i < size; ++i){
-                temp = Au[index[i]][k] / Au[index[k]][k];
-                for (j = k; j < size + 1; ++j)
-                    Au[index[i]][j] -= Au[index[k]][j] * temp;
+
+            /*Jordan elimination*/
+            for (int k = size - 1; k > 0; --k){
+                #pragma omp for schedule(guided)
+                for (int i = k - 1; i >= 0; --i ){
+                    double temp = Au[index[i]][k] / Au[index[k]][k];
+                    Au[index[i]][k] -= temp * Au[index[k]][k];
+                    Au[index[i]][size] -= temp * Au[index[k]][size];
+                }
             }
+
+            /*solution*/
+            #pragma omp for schedule(guided)
+            for (int k=0; k< size; ++k)
+                X[k] = Au[index[k]][size] / Au[index[k]][k];
         }
-        /*Jordan elimination*/
-        for (k = size - 1; k > 0; --k){
-            for (i = k - 1; i >= 0; --i ){
-                temp = Au[index[i]][k] / Au[index[k]][k];
-                Au[index[i]][k] -= temp * Au[index[k]][k];
-                Au[index[i]][size] -= temp * Au[index[k]][size];
-            }
-        }
-        /*solution*/
-        for (k=0; k< size; ++k)
-            X[k] = Au[index[k]][size] / Au[index[k]][k];
     }
+
     GET_TIME(end);
     Lab3SaveOutput(X, size, end - start);
 
