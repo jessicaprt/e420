@@ -17,6 +17,7 @@ OUT_DIR = "stats"
 output = []
 
 def gen_graph(data):
+    print(data)
     plt.figure()
     df2 = pandas.DataFrame(data, columns=EXECUTABLES)
     ax = df2.plot.bar(xticks = THREAD_SIZES)
