@@ -4,13 +4,16 @@ PACKAGE_NAME = 1396458-H42
 
 IO_OBJ = Lab3IO.o
 
-lab: original datagen serialtester
+lab: original.out shared_parallel_guided.out datagen serialtester
 
-original: original.c $(IO_OBJ)
+original.out: original.c $(IO_OBJ)
+	$(CC) $(CFLAGS) $^ -fopenmp -g -o $@
+
+shared_parallel_guided.out: shared_parallel_guided.c $(IO_OBJ)
 	$(CC) $(CFLAGS) $^ -fopenmp -g -o $@
 
 datagen: datagen.c $(IO_OBJ)
-	$(CC) $(CFLAGS) $^ -g -o $@
+	$(CC) $^ -g -o $@
 
 serialtester: serialtester.c $(IO_OBJ)
 	$(CC) $(CFLAGS) $^ -g -o $@ -lm
@@ -19,11 +22,11 @@ $(IO_OBJ): Lab3IO.c
 	$(CC) $(CFLAGS) -g -c Lab3IO.c
 
 clean:
-	rm *.o datagen serialtester original
+	rm *.o *.out datagen serialtester original
 
 push:
 	ssh e420 -t "mkdir -p lab3; rm -rf ./lab3/*"
-	scp Makefile *.c *.h *.txt *.sh e420:~/lab3/
+	scp Makefile *.c *.h *.sh e420:~/lab3/
 
 package:
 	@mkdir -p $(PACKAGE_NAME)

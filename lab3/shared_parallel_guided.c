@@ -85,5 +85,7 @@ int main(int argc, char* argv[]){
     DestroyVec(X);
     DestroyMat(Au, size);
     free(index);
+
+    printf("%f\n", end - start);
     return 0;
 }

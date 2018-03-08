@@ -1,11 +1,11 @@
 #! /bin/bash
 # Evaluate the assignment of Lab 3
-# 
+#
 # yaochen@ualberta.ca
-# Created Feb 16 2016   
+# Created Feb 16 2016
 # Modified Feb 16 2016
 # Modified Feb 28 2017 (huiquan@ualberta.ca)
-# 
+#
 # Usage:
 #	./check.sh
 # Notes:
