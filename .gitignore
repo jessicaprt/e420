@@ -16,6 +16,5 @@ client
 lab3/tmp/*
 lab3/*.out
 lab3/data_*
-lab3/test-results/
 datagen
 serialtester

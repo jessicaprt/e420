@@ -24,7 +24,7 @@ exec_command("rm {0}/*".format(OUT_DIR))
 exec_command("mkdir {0}".format(OUT_DIR))
 
 if (not os.path.exists("data_input")):
-    exec_command("./datagen -s 1024")
+    exec_command("./datagen -s 2048")
 
 for executable in EXECUTABLES:
     for thread_size in THREAD_SIZE:
