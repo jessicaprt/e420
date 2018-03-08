@@ -1,17 +1,17 @@
 import subprocess, time
 import os.path
-from pathlib import Path
-
 
 EXECUTABLES = [
     "original",
+    "shared_parallel_static",
+    "shared_parallel_dynamic",
     "shared_parallel_guided"
 ]
 
 OUT_DIR = "test-results"
 DATA_GEN = "datagen"
 
-TOTAL_RUNS = 100
+TOTAL_RUNS = 10
 THREAD_SIZE = [1, 4, 16]
 
 def start_command(command):

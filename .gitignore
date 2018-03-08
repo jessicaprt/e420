@@ -15,4 +15,7 @@ client
 # Lab 3
 lab3/tmp/*
 lab3/*.out
-original
+lab3/data_*
+lab3/test-results/
+datagen
+serialtester
