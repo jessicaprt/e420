@@ -30,27 +30,31 @@ int main(int argc, char* argv[]){
         X[0] = Au[0][1] / Au[0][0];
     else{
         /*Gaussian elimination*/
+        #pragma omp parallel num_threads(thread_count) default(none) shared(Au, X, index, size)
         {
             for (int k = 0; k < size - 1; ++k){
-                /*Pivoting*/
-                double temp = 0;
+                #pragma omp single
+                {
+                    /*Pivoting*/
+                    double temp = 0;
 
-                int j = 0;
-                for (int i = k; i < size; ++i) {
-                    if (temp < Au[index[i]][k] * Au[index[i]][k]){
-                        temp = Au[index[i]][k] * Au[index[i]][k];
-                        j = i;
+                    int j = 0;
+                    for (int i = k; i < size; ++i) {
+                        if (temp < Au[index[i]][k] * Au[index[i]][k]){
+                            temp = Au[index[i]][k] * Au[index[i]][k];
+                            j = i;
+                        }
+                    }
+
+                    if (j != k)/*swap*/{
+                        double i = index[j];
+                        index[j] = index[k];
+                        index[k] = i;
                     }
                 }
 
-                if (j != k)/*swap*/{
-                    double i = index[j];
-                    index[j] = index[k];
-                    index[k] = i;
-                }
-
                 /*calculating*/
-                #pragma omp parallel for num_threads(thread_count) default(none) shared(Au, index, k, size) private(i, j, temp)
+                #pragma omp for schedule(guided)
                 for (int i = k + 1; i < size; ++i){
                     double temp = Au[index[i]][k] / Au[index[k]][k];
                     for (int j = k; j < size + 1; ++j)
@@ -60,6 +64,7 @@ int main(int argc, char* argv[]){
 
             /*Jordan elimination*/
             for (int k = size - 1; k > 0; --k){
+                #pragma omp for schedule(guided)
                 for (int i = k - 1; i >= 0; --i ){
                     double temp = Au[index[i]][k] / Au[index[k]][k];
                     Au[index[i]][k] -= temp * Au[index[k]][k];
@@ -68,6 +73,7 @@ int main(int argc, char* argv[]){
             }
 
             /*solution*/
+            #pragma omp for schedule(guided)
             for (int k=0; k< size; ++k)
                 X[k] = Au[index[k]][size] / Au[index[k]][k];
         }
