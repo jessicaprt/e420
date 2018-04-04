@@ -18,3 +18,6 @@ lab3/*.out
 lab3/data_*
 datagen
 serialtester
+
+# Lab 4
+lab4/tmp
