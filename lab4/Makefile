@@ -7,14 +7,14 @@ IO_OBJ = Lab4_IO.o
 
 lab: main datatrim serialtester
 
-main: main.c
+main: main.c $(IO_OBJ)
 	$(MPICC) $^ -g -o $@
 
 datatrim: datatrim.c $(IO_OBJ)
 	$(CC) $^ -g -o $@ -lm
 
 serialtester: serialtester.c $(IO_OBJ)
-	$(CC) $(CFLAGS) $^ -g -o $@ -D LAB4_EXTEND -lm
+	$(CC) $(CFLAGS) $^ -g -o $@ -lm
 
 $(IO_OBJ): Lab4_IO.c
 	$(CC) $(CFLAGS) -g -c Lab4_IO.c
