@@ -5,19 +5,19 @@ PACKAGE_NAME = 1396458-H42
 
 IO_OBJ = Lab4_IO.o
 
-lab: datatrim serialtester
+lab: main datatrim serialtester
 
 main: main.c
 	$(MPICC) $^ -g -o $@
 
 datatrim: datatrim.c $(IO_OBJ)
-	$(CC) $^ -g -o $@
+	$(CC) $^ -g -o $@ -lm
 
 serialtester: serialtester.c $(IO_OBJ)
 	$(CC) $(CFLAGS) $^ -g -o $@ -D LAB4_EXTEND -lm
 
 $(IO_OBJ): Lab4_IO.c
-	$(CC) $(CFLAGS) -g -c Lab4_IO.c -lm
+	$(CC) $(CFLAGS) -g -c Lab4_IO.c
 
 clean:
 	rm *.o *.out

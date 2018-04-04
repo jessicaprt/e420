@@ -4,7 +4,7 @@
     -----
     Compiling:
     Include "Lab4_IO.c" to compile. Set the macro "LAB4_EXTEND" defined in the "Lab4_IO.c" file to include the extended functions
-    $ gcc serialtester.c Lab4_IO.c -o serialtester -lm 
+    $ gcc serialtester.c Lab4_IO.c -o serialtester -lm
 
     -----
     Return values:
@@ -59,10 +59,10 @@ int main (int argc, char* argv[]){
 
     // Adjust the threshold according to the problem size
     cst_addapted_threshold = THRESHOLD;
-    
+
     // Calculate the result
     if (node_init(&nodehead, num_in_links, num_out_links, 0, nodecount)) return 254;
-    
+
     r = malloc(nodecount * sizeof(double));
     r_pre = malloc(nodecount * sizeof(double));
     for ( i = 0; i < nodecount; ++i)
@@ -85,8 +85,8 @@ int main (int argc, char* argv[]){
     // post processing
     node_destroy(nodehead, nodecount);
     free(num_in_links); free(num_out_links);
-    
-    // Compare the result 
+
+    // Compare the result
     error = rel_error(collected_r, r, nodecount);
     printf ("The relative error against the reference result is %e .\n", error);
     free(r); free(r_pre); free(collected_r);
