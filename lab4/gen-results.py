@@ -7,7 +7,7 @@ DATA_GEN = "datatrim"
 
 TOTAL_RUNS = 10
 PROC_SIZES = [1, 4, 8, 16]
-DATA_SIZES = [4000, 8000, 16000]
+DATA_SIZES = [5155, 13000, 18789]
 
 def start_command(command):
     return subprocess.Popen(['bash','-c', command])
