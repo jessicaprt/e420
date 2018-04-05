@@ -25,27 +25,41 @@ int main(int argc, char** argv) {
 
     GET_TIME(start);
 
+    // load input data on main process
     if (rank == 0) {
         get_node_stat(&nodecount, &num_in_links, &num_out_links);
+        node_init(&nodes, num_in_links, num_out_links, 0, nodecount);
     }
 
+    // broadcast the node count to all other processes
     MPI_Bcast(&nodecount, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+    // if you are not the main process then allocate memory for
+    // the node information
     if (rank != 0) {
         num_in_links = malloc(sizeof(int) * nodecount);
         num_out_links = malloc(sizeof(int) * nodecount);
+        nodes = malloc(sizeof(struct node) * nodecount);
     }
 
+    // broadcast link information to remaining processes
     MPI_Bcast(num_in_links, nodecount, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(num_out_links, nodecount, MPI_INT, 0, MPI_COMM_WORLD);
+
+    // broadcast node information to remaining processes
+    for (i = 0; i < nodecount; i++) {
+        MPI_Bcast(&(nodes[i].num_in_links), 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&(nodes[i].num_out_links), 1, MPI_INT, 0, MPI_COMM_WORLD);
+        if (rank != 0) {
+            nodes[i].inlinks = malloc(sizeof(int) * nodes[i].num_in_links);
+        }
+        MPI_Bcast(nodes[i].inlinks, nodes[i].num_in_links, MPI_INT, 0, MPI_COMM_WORLD);
+    }
 
     // determine partition data for current rank
     partition_size = nodecount / num_procs;
     partition_start = rank * partition_size;
     damp_const = (1.0 - damp_factor) / nodecount;
-
-    // load node data for current partition
-    node_init(&nodes, num_in_links, num_out_links, partition_start, partition_start + partition_size);
 
     // allocate memory for rank information
     ranks = malloc(sizeof(double) * nodecount);
@@ -62,9 +76,9 @@ int main(int argc, char** argv) {
 
         for (i = 0; i < partition_size; i++) {
             local_ranks[i] = 0;
-            for (j = 0; j < nodes[i].num_in_links; j++) {
-                local_ranks[i] += last_ranks[nodes[i].inlinks[j]] /
-                    num_out_links[nodes[i].inlinks[j]];
+            for (j = 0; j < nodes[partition_start + i].num_in_links; j++) {
+                local_ranks[i] += last_ranks[nodes[partition_start + i].inlinks[j]] /
+                    num_out_links[nodes[partition_start + i].inlinks[j]];
             }
             local_ranks[i] *= damp_factor;
             local_ranks[i] += damp_const;
