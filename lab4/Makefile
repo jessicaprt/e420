@@ -2,8 +2,11 @@ CC = gcc
 MPICC = mpicc
 CFLAGS = --std=c99
 PACKAGE_NAME = 1396458-H42
+PACKAGE_FILES = Makefile main.c LAB4_IO.c readme.txt members.txt *.h
 PUSH_FILES = Makefile *.c *.h *.sh *.txt *.py
 IO_OBJ = Lab4_IO.o
+
+all: main
 
 all-clusters:
 	ssh e420 -t "cd lab4/; make lab; \
@@ -27,7 +30,7 @@ $(IO_OBJ): Lab4_IO.c
 
 clean:
 	rm *.o *.out
-	rm -f datagen serialtester original
+	rm -f datagen serialtester main
 
 push:
 	@echo Syncing to main system
