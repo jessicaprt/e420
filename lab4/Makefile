@@ -2,7 +2,7 @@ CC = gcc
 MPICC = mpicc
 CFLAGS = --std=c99
 PACKAGE_NAME = 1396458-H42
-PUSH_FILES = Makefile *.c *.h *.sh *.txt
+PUSH_FILES = Makefile *.c *.h *.sh *.txt *.py
 IO_OBJ = Lab4_IO.o
 
 all-clusters:
