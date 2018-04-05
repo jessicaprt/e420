@@ -7,14 +7,14 @@
 
 int Lab4_saveoutput(double *R, int nodecount, double Time){
 /*
-    Save the data to file for Lab 4 
+    Save the data to file for Lab 4
 
     -----
     Input:
-    int *R         pointer to the result array 
-    int nodecount  number of nodes 
+    int *R         pointer to the result array
+    int nodecount  number of nodes
     double Time    measured calculation time
-    
+
     -----
     Output:
     data_output the stored data
@@ -22,7 +22,7 @@ int Lab4_saveoutput(double *R, int nodecount, double Time){
     -----
     Example:
     lab4_saveoutput(R, nodecount, Time);
-*/    
+*/
     FILE* op;
     int i;
 
@@ -49,16 +49,16 @@ int get_node_stat(int *nodecount, int **num_in_links, int **num_out_links){
     }
     fscanf(ip, "%d\n", nodecount);
     //fscanf(ip, "%d\n", &Ecount);
-    (*num_in_links) = malloc((*nodecount) * sizeof(int)); 
-    (*num_out_links) = malloc((*nodecount) * sizeof(int)); 
+    (*num_in_links) = malloc((*nodecount) * sizeof(int));
+    (*num_out_links) = malloc((*nodecount) * sizeof(int));
     for (i = 0; i < (*nodecount); ++i){
         (*num_in_links)[i] = 0;
         (*num_out_links)[i] = 0;
     }
     while(!feof(ip)){
-        fscanf(ip, "%d\t%d\n", &src, &dst); 
+        fscanf(ip, "%d\t%d\n", &src, &dst);
         ++(*num_in_links)[dst]; ++(*num_out_links)[src];
-    } 
+    }
     fclose(ip);
     return 0;
 }

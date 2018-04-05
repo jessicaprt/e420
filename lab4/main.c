@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Lab4_IO.h"
+#include "timer.h"
 
 int copy_values(double* from, double* to, int start, int end) {
     int i = 0;
@@ -23,10 +24,13 @@ int main(int argc, char** argv) {
     double damp_factor = 0.85;
     double current_error = 0;
     int i, j;
+    double start, end;
 
     MPI_Init(NULL, NULL);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    GET_TIME(start);
 
     if (rank == 0) {
         get_node_stat(&nodecount, &num_in_links, &num_out_links);
@@ -82,8 +86,10 @@ int main(int argc, char** argv) {
         MPI_Bcast(&current_error, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     } while (current_error >= EPSILON);
 
+    GET_TIME(end);
     if (rank == 0) {
         printf("Error: %f\n", current_error);
+        Lab4_saveoutput(&current_error, nodecount, end - start);
     }
 
     MPI_Finalize();
