@@ -32,22 +32,28 @@ int main(int argc, char** argv) {
 
     GET_TIME(start);
 
+    // load input data on main process
     if (rank == 0) {
         get_node_stat(&nodecount, &num_in_links, &num_out_links);
         node_init(&nodes, num_in_links, num_out_links, 0, nodecount);
     }
 
+    // broadcast the node count to all other processes
     MPI_Bcast(&nodecount, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+    // if you are not the main process then allocate memory for
+    // the node information
     if (rank != 0) {
         num_in_links = malloc(sizeof(int) * nodecount);
         num_out_links = malloc(sizeof(int) * nodecount);
         nodes = malloc(sizeof(struct node) * nodecount);
     }
 
+    // broadcast link information to remaining processes
     MPI_Bcast(num_in_links, nodecount, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(num_out_links, nodecount, MPI_INT, 0, MPI_COMM_WORLD);
 
+    // broadcast node information to remaining processes
     for (int i = 0; i < nodecount; i++) {
         MPI_Bcast(&(nodes[i].num_in_links), 1,  MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Bcast(&(nodes[i].num_out_links), 1,  MPI_INT, 0, MPI_COMM_WORLD);
@@ -57,14 +63,17 @@ int main(int argc, char** argv) {
         MPI_Bcast(&(nodes[i].inlinks), 1,  MPI_INT, 0, MPI_COMM_WORLD);
     }
 
+    // determine partition data for current rank
     partition_size = nodecount / num_procs;
     partition_start = rank * partition_size;
     partition_end = partition_start + partition_size;
     damp_const = (1.0 - damp_factor) / nodecount;
 
+    // allocate memory for rank information
     ranks = malloc(sizeof(double) * nodecount);
     last_ranks = malloc(sizeof(double) * nodecount);
 
+    // main page rank algorithm
     do {
         for (i = partition_start; i < partition_end; i++) {
             ranks[i] = 1.0 / nodecount;
@@ -81,16 +90,21 @@ int main(int argc, char** argv) {
             ranks[i] += damp_const;
         }
 
+        // gather partition date back into the main process
         MPI_Gather(ranks + partition_start, nodecount, MPI_DOUBLE, ranks, nodecount, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+        // calculate error on current ranks and broadcase it to the rest of the processes
         current_error = rel_error(ranks, last_ranks, nodecount);
         MPI_Bcast(&current_error, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     } while (current_error >= EPSILON);
 
     GET_TIME(end);
+    // output result to file
     if (rank == 0) {
         printf("Error: %f\n", current_error);
         Lab4_saveoutput(&current_error, nodecount, end - start);
     }
 
     MPI_Finalize();
+    return 0;
 }
