@@ -25,8 +25,19 @@ int main(int argc, char** argv) {
 
     GET_TIME(start);
 
-    // get node stats from file
-    get_node_stat(&nodecount, &num_in_links, &num_out_links);
+    if (rank == 0) {
+        get_node_stat(&nodecount, &num_in_links, &num_out_links);
+    }
+
+    MPI_Bcast(&nodecount, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    if (rank != 0) {
+        num_in_links = malloc(sizeof(int) * nodecount);
+        num_out_links = malloc(sizeof(int) * nodecount);
+    }
+
+    MPI_Bcast(num_in_links, nodecount, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(num_out_links, nodecount, MPI_INT, 0, MPI_COMM_WORLD);
 
     // determine partition data for current rank
     partition_size = nodecount / num_procs;
