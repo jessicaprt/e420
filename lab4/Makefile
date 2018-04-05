@@ -24,8 +24,14 @@ clean:
 	rm -f datagen serialtester original
 
 push:
-	ssh e420 -t "mkdir -p lab4; rm -rf ./lab4/*"
-	scp Makefile *.c *.h *.sh *.txt e420:~/lab4/
+	@echo Syncing to main system
+	rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt e420:~/lab4/
+
+	@echo Syncing main system with the rest of the cluster
+	ssh e420 -t cd "lab4/; \
+		rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt 192.168.0.173:~/lab4/; \
+		rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt 192.168.0.38:~/lab4/; \
+		rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt 192.168.0.27:~/lab4/"
 
 package:
 	@mkdir -p $(PACKAGE_NAME)
