@@ -20,7 +20,7 @@ def gen_graph(data, node_size):
     plt.title('Performance with {} nodes'.format(node_size), fontsize=12)
     plt.xlabel('Number of Processes', fontsize=12)
     plt.ylabel('Execution Time (s)', fontsize=12)
-    ax.set_xticklabels(PROC_SIZES, fontsize=10)
+    ax.set_xticklabels(PROC_SIZES, rotation='horizontal', fontsize=10)
     plt.savefig('./stats/{}-fig.png'.format(data_size))
 
 for i in range(len(DATA_SIZES)):
