@@ -24,6 +24,6 @@ for data_size in DATA_SIZES:
     for proc_size in PROC_SIZES:
         print("Testing {} with a data size of {} and process count of {}.".format(EXECUTABLE, data_size, proc_size))
         for i in range(TOTAL_RUNS):
-            results_file = "./{0}/{1}-{2}-{3}.txt".format(OUT_DIR, EXECUTABLE, data_size, proc_size)
-            launch_command = "mpirun -np {} -f hosts ./{} | tail -n 1 >> {}".format(proc_size, EXECUTABLE, results_file)
+            results_file = "./{0}/{1}-{2}-{3}-single.txt".format(OUT_DIR, EXECUTABLE, data_size, proc_size)
+            launch_command = "mpirun -np {} ./{} | tail -n 1 >> {}".format(proc_size, EXECUTABLE, results_file)
             process = exec_command(launch_command)

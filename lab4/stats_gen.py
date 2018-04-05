@@ -14,7 +14,7 @@ output = []
 
 def gen_graph(data, node_size):
     plt.figure()
-    df2 = pandas.DataFrame(data, columns=EXECUTABLES)
+    df2 = pandas.DataFrame(data, columns=["single machine", "multiple machines"])
     ax = df2.plot.bar()
 
     plt.title('Performance with {} nodes'.format(node_size), fontsize=12)
@@ -30,12 +30,21 @@ for i in range(len(DATA_SIZES)):
     for proc_size in PROC_SIZES:
         means.append([])
         for executable in EXECUTABLES:
-            latency_file = "./{}/{}-{}-{}.txt".format(TEST_RESULTS_DIR, executable, data_size, proc_size)
+            latency_file_multiple = "./{}/{}-{}-{}.txt".format(TEST_RESULTS_DIR, executable, data_size, proc_size)
+            latency_file_single = "./{}/{}-{}-{}-single.txt".format(TEST_RESULTS_DIR, executable, data_size, proc_size)
+
             mean_latency = 0
 
-            with open(latency_file) as file:
+            with open(latency_file_single) as file:
                 data = [float(line.strip()) for line in file.readlines()]
                 mean_latency = sum(data) / float(len(data))
                 means[-1].append(mean_latency)
+
+            with open(latency_file_multiple) as file:
+                data = [float(line.strip()) for line in file.readlines()]
+                mean_latency = sum(data) / float(len(data))
+                means[-1].append(mean_latency)
+
     print("Means for {}: {}".format(node_size, means))
+
     gen_graph(means, node_size)
