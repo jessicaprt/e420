@@ -6,13 +6,6 @@
 #include "Lab4_IO.h"
 #include "timer.h"
 
-void copy_values(double* from, double* to, int start, int end) {
-    int i = 0;
-    for (i = start; i < end; i++) {
-        to[i] = from[i];
-    }
-}
-
 int main(int argc, char** argv) {
     struct node *nodes;
     int nodecount;
