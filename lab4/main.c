@@ -64,14 +64,13 @@ int main(int argc, char** argv) {
 
         // calculate error on current ranks and broadcase it to the rest of the processes
         current_error = rel_error(ranks, last_ranks, nodecount);
-        printf("Error: %f\n", current_error);
     } while (current_error >= EPSILON);
 
     GET_TIME(end);
     // output result to file
     if (rank == 0) {
-        printf("Error: %f\n", current_error);
         Lab4_saveoutput(ranks, nodecount, end - start);
+        printf("%f\n", end - start);
     }
 
     MPI_Finalize();
