@@ -2,13 +2,19 @@ CC = gcc
 MPICC = mpicc
 CFLAGS = --std=c99
 PACKAGE_NAME = 1396458-H42
-
+PUSH_FILES = Makefile *.c *.h *.sh *.txt
 IO_OBJ = Lab4_IO.o
+
+all-clusters:
+	ssh e420 -t "cd lab4/; make lab; \
+		ssh 192.168.0.173 -t 'cd lab4/; make lab'; \
+		ssh 192.168.0.38 -t 'cd lab4/; make lab'; \
+		ssh 192.168.0.27 -t 'cd lab4/; make lab'"
 
 lab: main datatrim serialtester
 
 main: main.c $(IO_OBJ)
-	$(MPICC) $^ -g -o $@
+	$(MPICC) $^ -g -o $@ -lm
 
 datatrim: datatrim.c $(IO_OBJ)
 	$(CC) $^ -g -o $@ -lm
@@ -25,13 +31,15 @@ clean:
 
 push:
 	@echo Syncing to main system
-	rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt e420:~/lab4/
+	rsync -arvz -e "ssh" --progress $(PUSH_FILES) e420:~/lab4/
 
 	@echo Syncing main system with the rest of the cluster
 	ssh e420 -t cd "lab4/; \
-		rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt 192.168.0.173:~/lab4/; \
-		rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt 192.168.0.38:~/lab4/; \
-		rsync -arvz -e "ssh" --progress Makefile *.c *.h *.sh *.txt 192.168.0.27:~/lab4/"
+		rsync -arvz -e "ssh" --progress $(PUSH_FILES) 192.168.0.173:~/lab4/; \
+		rsync -arvz -e "ssh" --progress $(PUSH_FILES) 192.168.0.38:~/lab4/; \
+		rsync -arvz -e "ssh" --progress $(PUSH_FILES) 192.168.0.27:~/lab4/"
+
+push-and-build: push all-clusters
 
 package:
 	@mkdir -p $(PACKAGE_NAME)
