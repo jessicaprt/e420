@@ -14,12 +14,12 @@ output = []
 def gen_graph(data, data_size):
     plt.figure()
     df2 = pandas.DataFrame(data, columns=EXECUTABLES)
-    ax = df2.plot.bar(xticks = PROC_SIZES)
+    ax = df2.plot.bar()
 
     plt.title('Performance with upper bound of {}'.format(data_size), fontsize=12)
     plt.xlabel('Number of Processes', fontsize=12)
     plt.ylabel('Execution Time(s)', fontsize=12)
-
+    ax.set_xticklabels(PROC_SIZES, fontsize=10)
     plt.savefig('./stats/{}-fig.png'.format(data_size))
 
 for data_size in DATA_SIZES:
